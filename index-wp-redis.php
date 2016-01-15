@@ -40,12 +40,14 @@ function getCleanUrl($secret) {
 $wp_blog_header_path = dirname( __FILE__ ) . '/wp-blog-header.php';
 $debug          = true;
 $cache          = true;
+$compress	= true;
+$unlimited	= true;
 $websiteIp      = '127.0.0.1';
 // if you use sockets, set this to true and use $redis_server for socket path
 $sockets        = false;
 // in case of sockets something like /home/user/.redis/sock
 $redis_server   = 'raven.internal.wildwingstudios.com';
-$secret_string  = 'wildwingadmin';
+$secret_string  = 'changeme';
 $current_url    = getCleanUrl($secret_string);
 // used to prefix ssl cached pages
 $isSSL = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? "ssl_" : "";
@@ -103,7 +105,7 @@ try {
 		$redis->del("ssl_".$redis_key);
 		require( $wp_blog_header_path );
 		
-		$unlimited = get_option('wp-redis-cache-debug',false);
+		//$unlimited = get_option('wp-redis-cache-debug',false);
 		$seconds_cache_redis = get_option('wp-redis-cache-seconds',86400);
 	    // This page is cached, lets display it
 	    } else if ($redis->exists($redis_key)) {
@@ -112,6 +114,9 @@ try {
 		}
 		$cache  = true;
 		$html_of_page = $redis->get($redis_key);
+		if ($compress) {
+			$html_of_page = gzuncompress($html_of_page);
+		}
 		echo $html_of_page;
 
 	     // If the cache does not exist lets display the user the normal page without cache, and then fetch a new cache page
@@ -134,6 +139,10 @@ try {
 		    if (!is_numeric($seconds_cache_redis)) {
 			$seconds_cache_redis = 86400;
 		    }
+
+		    if ($compress) {
+                        $html_of_page = gzcompress($html_of_page,1);
+                    }
 
 		    // When a page displays after an "HTTP 404: Not Found" error occurs, do not cache
 		    // When the search was used, do not cache
