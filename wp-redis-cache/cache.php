@@ -13,7 +13,7 @@ function refresh_wp_redis_cache( $new, $old, $post )
 
 		// aaronstpierre: this needs to be include_once so as not to cauase a redeclaration error
 		include_once("predis5.2.php");  //we need this to use Redis inside of PHP
-		$redis = new Predis_Client();
+		$redis = new Predis_Client("tcp://raven.internal.wildwingstudios.com");
 
 		$redis_key = md5($permalink);
 		$redis->del($redis_key);
@@ -33,7 +33,7 @@ function clear_wp_redis_cache()
 	include_once("predis5.2.php"); //we need this to use Redis inside of PHP
 	$args = array( 'post_type' => 'any', 'posts_per_page' => -1);
 	$wp_query = new WP_Query( $args); // to get all Posts
-    $redis = new Predis_Client();
+    $redis = new Predis_Client("tcp://raven.internal.wildwingstudios.com");
 
 	// Loop all posts and clear the cache
 	$i = 0;

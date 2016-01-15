@@ -35,14 +35,10 @@ function add_redis_interface() {
 function edit_redis_options() {
     ?>
     <div class='wrap'>
-    <h2>Wp-Redis Options</h2>
+    <h2>Wild Wing Cache Options</h2>
     <form method="post" action="options.php">
     <?php wp_nonce_field('update-options') ?>
 	
-	<p>This plugin does not work out of the box and requires additional steps.<br />
-	Please follow these install instructions: <a target='_blank' href='https://github.com/BenjaminAdams/wp-redis-cache'>https://github.com/BenjaminAdams/wp-redis-cache</a></p>
-	
-	<p>If you do not have Redis installed on your machine this will NOT work! </p>
 
     <p><strong>Seconds of Caching:</strong><br />
 	How many seconds would you like to cache?  *Recommended 12 hours or 43200 seconds <br />
